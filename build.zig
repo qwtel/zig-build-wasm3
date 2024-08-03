@@ -50,6 +50,7 @@ pub fn build(b: *std.Build) !void {
         else
             &cflags,
     });
+    libwasm3.installHeadersDirectory(b.path("source"), "", .{});
     libwasm3.linkSystemLibrary("m");
     libwasm3.linkLibC();
 
