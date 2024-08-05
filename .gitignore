@@ -9,6 +9,8 @@ __pycache__/
 .project
 .cproject
 .settings
+.vs
 .vscode
 .DS_Store
 *zig-*/
+out
