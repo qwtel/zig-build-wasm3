@@ -14,7 +14,29 @@
 
 #if defined(M3_COMPILER_MSVC)
 
+#if defined(_M_ARM64) || defined(__aarch64__)
+#include <arm_neon.h>
+int __popcnt(uint32_t x) {
+    uint8x8_t byte_counts = vcnt_u8(vcreate_u8((uint64_t)x));
+    
+    uint8x8_t sum1 = vpadd_u8(byte_counts, byte_counts);
+    uint8x8_t sum2 = vpadd_u8(sum1, sum1);
+    uint8x8_t sum3 = vpadd_u8(sum2, sum2);
+    
+    return vget_lane_u8(sum3, 0);
+}
+int __popcnt64(uint64_t x) {
+    uint8x8_t byte_counts = vcnt_u8(vcreate_u8(x));
+    
+    uint8x8_t sum1 = vpadd_u8(byte_counts, byte_counts);
+    uint8x8_t sum2 = vpadd_u8(sum1, sum1);
+    uint8x8_t sum3 = vpadd_u8(sum2, sum2);
+    
+    return vget_lane_u8(sum3, 0);
+}
+#else
 #include <intrin.h>
+#endif
 
 #define __builtin_popcount    __popcnt
 
