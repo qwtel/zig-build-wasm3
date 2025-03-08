@@ -12,11 +12,11 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
     libwasm3.root_module.sanitize_c = false; // fno-sanitize=undefined
-    libwasm3.defineCMacro("d_m3HasTracer", null);
+    libwasm3.root_module.addCMacro("d_m3HasTracer", "");
 
-    if (libwasm3.rootModuleTarget().isWasm()) {
+    if (libwasm3.rootModuleTarget().cpu.arch.isWasm()) {
         if (libwasm3.rootModuleTarget().os.tag == .wasi) {
-            libwasm3.defineCMacro("d_m3HasWASI", null);
+            libwasm3.root_module.addCMacro("d_m3HasWASI", "");
             libwasm3.linkSystemLibrary("wasi-emulated-process-clocks");
         }
     }
@@ -40,7 +40,7 @@ pub fn build(b: *std.Build) !void {
             "source/m3_module.c",
             "source/m3_parse.c",
         },
-        .flags = if (libwasm3.rootModuleTarget().isWasm())
+        .flags = if (libwasm3.rootModuleTarget().cpu.arch.isWasm())
             &cflags ++ [_][]const u8{
                 "-Xclang",
                 "-target-feature",
